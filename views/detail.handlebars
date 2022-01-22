@@ -48,7 +48,7 @@
                                 <img src="./assets/wireless-headphones" class="ir ir item-image as-producttile-image  " style="max-width: 70%;max-height: 70%;"alt="" width="445" height="445">
                             </div>
                             <div class="images mini-gallery gal5 ">
-                            
+
 
                                 <div class="as-isdesktop with-paddlenav with-paddlenav-onhover">
                                     <div class="clearfix image-list xs-no-js as-util-relatedlink relatedlink" data-relatedlink="6|Powerbeats3 Wireless Earphones - Neighborhood Collection - Brick Red|MPXP2">
@@ -56,18 +56,18 @@
                                             <div class=""></div>
                                             <img src="./assets/003.jpg" class="ir ir item-image as-producttile-image" alt="" width="445" height="445" style="content:-webkit-image-set(url({{ img }}) 2x);">
                                         </div>
-                                        
+
                                     </div>
 
-                                    
+
                                 </div>
 
-                                
+
 
                             </div>
 
                         </div>
-                        <div class="as-producttile-info" style="float:left;min-height: 168px;">
+                        <div class="as-producttile-info" data-title="{{ title }}" data-unit="{{ unit }}" data-price="{{ price }}" data-img="{{ img }}" style="float:left;min-height: 168px;">
                             <div class="as-producttile-titlepricewraper" style="min-height: 128px;">
                                 <div class="as-producttile-title">
                                     <h3 class="as-producttile-name">
@@ -84,7 +84,7 @@
                                     {{ unit }}
                                 </h3>
                             </div>
-                            <button type="submit" class="mercadopago-button" formmethod="post">Pagar</button>
+                            <div class="mercadopago-button"></div>
                         </div>
                     </div>
                 </div>
@@ -92,4 +92,33 @@
         </div>
     </div>
 </div>
-   
+<script src="https://www.mercadopago.com/v2/security.js" view="item"></script>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderData = document.querySelector('.as-producttile-info').dataset;
+        fetch('/create_preference', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData),
+        })
+        .then(response => response.json())
+        .then(function(preference) {
+            const mp = new MercadoPago('TEST-806ef2a8-f2a8-44f5-8505-e0385984b491', {
+                locale: 'pt-BR'
+            });
+
+            mp.checkout({
+                preference: { id: preference.id },
+                render: {
+                    container: '.mercadopago-button',
+                    label: 'Pague a compra',
+                }
+            });
+        })
+        .catch(function() {
+            console.log('Erro ao criar preferencia');
+        });
+    });
+</script>
